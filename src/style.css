@@ -40,3 +40,5 @@ h2 { margin: 0; font-size: 22px; }
 pre { min-height: 560px; margin: 0; white-space: pre-wrap; padding: 24px; color: #f4f4f5; font-size: 15px; line-height: 1.85; font-family: inherit; }
 @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } .hero { flex-direction: column; align-items: stretch; } .brandBox { text-align: left; } }
 @media (max-width: 620px) { .page { padding: 12px; } .card, .hero { padding: 18px; border-radius: 22px; } .formGrid, .pillGrid { grid-template-columns: 1fr; } pre { min-height: 420px; padding: 18px; } }
+.primary:disabled { opacity: .65; cursor: wait; }
+.errorBox { margin: 18px 24px 0; border: 1px solid rgba(248,113,113,.45); background: rgba(127,29,29,.28); color: #fecaca; border-radius: 14px; padding: 14px 16px; line-height: 1.6; }

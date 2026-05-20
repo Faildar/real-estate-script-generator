@@ -47,9 +47,16 @@ function App() {
   };
   const [form, setForm] = useState(defaultForm);
   const [copied, setCopied] = useState(false);
-  const set = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
+  const [aiScript, setAiScript] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const set = (key, value) => {
+    setAiScript('');
+    setError('');
+    setForm((prev) => ({ ...prev, [key]: value }));
+  };
 
-  const script = useMemo(() => {
+  const fallbackScript = useMemo(() => {
     const hookLine = {
       衝突: `你以為${form.area}旁邊的房子都很貴嗎？這間可能會顛覆你的想法。`,
       反差: '外觀看起來很低調，但條件打開後，我覺得這間真的有戲。',
@@ -103,6 +110,31 @@ CTA：想看適合家庭的物件條件，私訊我「家庭」。
     return `【完整企劃】\n\n影片定位：${form.videoStyle} × ${form.personality} × ${form.goal}\n\n0-3秒｜鉤子\n${hookLine}\n\n4-15秒｜情境\n${form.caseInfo}\n\n16-35秒｜成交觀點\n這間不要只看表面條件，真正的重點是它卡在${form.area}，又剛好有${form.eventType}的題材。對${form.role}來說，這種案子最適合先比較行情，再決定要不要出手。\n\n36-50秒｜信任補強\n我會建議你不要衝動下斡旋，但也不要等到別人出價才開始後悔。先看成交行情，再看屋主目前的價格彈性。\n\n51-60秒｜CTA\n${cta}\n\n字幕建議：\n「這間不一定最漂亮，但很有成交機會」\n「${form.area} × 價格感 × 屋主動機」\n「想看行情，留言我整理給你」`;
   }, [form]);
 
+  const script = aiScript || fallbackScript;
+
+  const generateAiScript = async () => {
+    setIsLoading(true);
+    setError('');
+    setAiScript('');
+    try {
+      const response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form)
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data?.error || '生成失敗，請稍後再試。');
+      }
+      setAiScript(data.script || 'AI 沒有回傳內容，請再試一次。');
+    } catch (err) {
+      setError(err.message || '生成失敗，請稍後再試。');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const copyScript = async () => {
     await navigator.clipboard.writeText(script);
     setCopied(true);
@@ -119,7 +151,7 @@ CTA：想看適合家庭的物件條件，私訊我「家庭」。
             <p className="subtitle">輸入設定，一鍵生成短影音企劃、鉤子、腳本與社群文案。</p>
           </div>
           <div className="brandBox">
-            <p>本地模擬版</p>
+            <p>GPT 串接版</p>
             <strong>阿晟成交風格</strong>
           </div>
         </motion.header>
@@ -149,7 +181,9 @@ CTA：想看適合家庭的物件條件，私訊我「家庭」。
               </div>
             </div>
             <div className="actions">
-              <button className="primary"><Sparkles size={18} /> 生成爆紅腳本</button>
+              <button className="primary" onClick={generateAiScript} disabled={isLoading}>
+                <Sparkles size={18} /> {isLoading ? 'AI 生成中...' : '生成爆紅腳本'}
+              </button>
               <button className="secondary" onClick={() => setForm(defaultForm)}><RotateCcw size={18} /> 重生</button>
               <button className="secondary" onClick={() => set('caseInfo', '')}><Trash2 size={18} /> 清空</button>
             </div>
@@ -160,7 +194,8 @@ CTA：想看適合家庭的物件條件，私訊我「家庭」。
               <div><p className="eyebrow small">OUTPUT</p><h2>生成結果</h2></div>
               <button className="copy" onClick={copyScript}><Copy size={16} /> {copied ? '已複製' : '複製'}</button>
             </div>
-            <pre>{script}</pre>
+            {error && <div className="errorBox">{error}</div>}
+            <pre>{isLoading ? 'AI 正在依照你的設定生成腳本，請稍候...' : script}</pre>
           </section>
         </main>
       </div>
