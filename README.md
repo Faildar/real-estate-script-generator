@@ -18,3 +18,8 @@ OPENAI_API_KEY=你的 OpenAI API Key
 
 ## 部署
 把整個資料夾覆蓋到 GitHub repository，Commit / Push 後，Vercel 會自動重新部署。
+
+
+## v4 更新
+- 新增輸出類型：藏鏡人模式。
+- 藏鏡人模式會產生雙人一問一答口播腳本，風格更生活化、降低商業感。
