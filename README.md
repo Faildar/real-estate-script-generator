@@ -1,25 +1,29 @@
-# 房仲腳本生成器 GPT 串接版
+# 房仲腳本生成器 v5｜多身分切換版
 
-這是一個 React + Vite + Vercel Serverless API 的單頁網站。
+這是一個 React + Vite + Vercel API 的房仲短影音腳本生成器。
 
-## 功能
-- 下拉式選單控制生成條件
-- 串接 OpenAI API 生成房仲短影音腳本
-- API Key 放在 Vercel Environment Variables，不會出現在前端
+## v5 更新
 
-## Vercel 環境變數
-請在 Vercel 專案設定新增：
+- 新增多身分 Prompt Routing
+- 不同輸出類型會切換不同 AI 身分：
+  - 完整企劃：房仲短影音企劃顧問
+  - 只要鉤子：爆款短影音開場鉤子設計師
+  - 只要腳本：房仲短影音口播腳本大師
+  - 只要貼文：專業社群文案人員
+  - 時事口播推薦：房仲日更內容選題顧問
+  - 藏鏡人模式：生活化雙人對談腳本大師
+
+## 部署提醒
+
+Vercel 需要設定環境變數：
 
 ```txt
-OPENAI_API_KEY=你的 OpenAI API Key
+OPENAI_API_KEY
 ```
 
-建議套用到 Production / Preview / Development。
+## 本機測試
 
-## 部署
-把整個資料夾覆蓋到 GitHub repository，Commit / Push 後，Vercel 會自動重新部署。
-
-
-## v4 更新
-- 新增輸出類型：藏鏡人模式。
-- 藏鏡人模式會產生雙人一問一答口播腳本，風格更生活化、降低商業感。
+```bash
+npm install
+npm run dev
+```
